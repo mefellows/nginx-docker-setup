@@ -1,0 +1,21 @@
+nginx:
+  build: .
+  ports:
+   - "8001:80"
+  volumes:
+  - "/var/log/nginx:/var/log/nginx/"
+  links:
+   - dns:dnsmasq
+   - api:api.foo.local
+
+api:
+  build: test/mockapi
+  ports:
+   - "8002:80"
+
+dns:
+  build: ./dnsmasq
+  ports:
+  - "5353:53"
+  links:
+   - api:api.foo.local

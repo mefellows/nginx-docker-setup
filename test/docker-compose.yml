@@ -1,0 +1,45 @@
+## Nginx, but using our stubbed out DNS and API endpoints
+nginx:
+  build: ../
+  links:
+   - dns:dnsmasq
+   - api:api.foo.local
+   - api:api.foo.com
+   - api:myfandangledwebsite.com   
+   - api:bar.com
+   - api:newbar.com   
+  ports:
+   - "8001:80"
+  volumes:
+  - "/var/log/nginx:/var/log/nginx/"
+
+## Responds to DNS queries and sends them to our Mock API
+dns:
+  build: ../dnsmasq
+  ports:
+  - 53:53
+  links:
+   - api:apitest.foo.local
+   - api:newbar.com
+   - api:bar.com
+   - api:myfandangledwebsite.com   
+   - api:api.foo.com
+   - api:api.foo.local
+
+## Echo / Mock Server to pretend to be our real application
+api:
+  build: mockapi
+  ports:
+   - "8002:80"
+
+## This guy runs our Unit tests!
+test:
+  build: integration-test
+  command: go test -v ./...
+  links:
+    - nginx:apitest.foo.local
+    - nginx:nginx
+    - nginx:e7e6ad6e7fee22fc4c69dd73aab43d8c.foo.com
+    - nginx:myfandangledwebsite.com
+    - nginx:api.foo.com
+    - nginx:bar.com
