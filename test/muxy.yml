@@ -1,0 +1,49 @@
+## Nginx, but using our stubbed out DNS and API endpoints
+nginx:
+  build: ../
+  links:
+   - dns:dnsmasq
+   - api:api.foo.local
+   - api:api.foo.com
+   - api:myfandangledwebsite.com   
+   - api:bar.com
+   - api:newbar.com   
+   - api2:api-backup.foo.local
+  ports:
+   - "8001:80"
+  volumes:
+  - "/proc:/writable-proc" 
+  - "./log:/var/log/nginx/"
+
+## Responds to DNS queries and sends them to our Mock API
+dns:
+  build: ../dnsmasq
+  ports:
+  - 53:53
+  links:
+   - api:apitest.foo.local
+   - api:newbar.com
+   - api:bar.com
+   - api:myfandangledwebsite.com   
+   - api:api.foo.com
+   - api:api.foo.local
+   - api2:api-backup.foo.local   
+
+## Echo / Mock Server to pretend to be our real application
+api:
+  build: mockapi
+  ports:
+   - "8002:80"
+
+api2:
+  build: mockapi
+  ports:
+   - "8003:80"
+
+# Performance tests via Gatling
+muxy:
+  build: ../muxy
+  command: "-sf /opt/gatling/user-files -s nginx"
+  links:
+   - nginx:api.foo.com
+   - nginx:nginx

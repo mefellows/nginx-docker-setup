@@ -8,10 +8,12 @@ nginx:
    - api:myfandangledwebsite.com   
    - api:bar.com
    - api:newbar.com   
+   - api2:api-backup.foo.local
   ports:
    - "8001:80"
   volumes:
-  - "/var/log/nginx:/var/log/nginx/"
+  - "/proc:/writable-proc" 
+  - "./log:/var/log/nginx/"
 
 ## Responds to DNS queries and sends them to our Mock API
 dns:
@@ -25,6 +27,7 @@ dns:
    - api:myfandangledwebsite.com   
    - api:api.foo.com
    - api:api.foo.local
+   - api2:api-backup.foo.local   
 
 ## Echo / Mock Server to pretend to be our real application
 api:
@@ -32,14 +35,18 @@ api:
   ports:
    - "8002:80"
 
-## This guy runs our Unit tests!
-test:
-  build: integration-test
-  command: go test -v ./...
+api2:
+  build: mockapi
+  ports:
+   - "8003:80"
+
+# Performance tests via Gatling
+perf:
+  build: ../gatling
+  command: "-sf /opt/gatling/user-files -s nginx"
+  volumes:
+    - "./gatling/user-files:/opt/gatling/user-files"
+    - "./gatling/results:/opt/gatling/results"
   links:
-    - nginx:apitest.foo.local
-    - nginx:nginx
-    - nginx:e7e6ad6e7fee22fc4c69dd73aab43d8c.foo.com
-    - nginx:myfandangledwebsite.com
-    - nginx:api.foo.com
-    - nginx:bar.com
+   - nginx:api.foo.com
+   - nginx:nginx

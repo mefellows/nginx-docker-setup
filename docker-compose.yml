@@ -4,14 +4,21 @@ nginx:
    - "8001:80"
   volumes:
   - "/var/log/nginx:/var/log/nginx/"
+  - "/proc:/writable-proc"   
   links:
    - dns:dnsmasq
    - api:api.foo.local
+   - api2:api-backup.foo.local
 
 api:
   build: test/mockapi
   ports:
    - "8002:80"
+
+api2:
+  build: test/mockapi
+  ports:
+   - "8003:80"
 
 dns:
   build: ./dnsmasq
@@ -19,3 +26,4 @@ dns:
   - "5353:53"
   links:
    - api:api.foo.local
+   - api2:api-backup.foo.local

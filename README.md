@@ -28,7 +28,8 @@ Integration test suite for Nginx.
 ## Running Tests
 
 ```
-./scripts/run-tests.sh
+./scripts/run-tests.sh          # Run all tests
+./scripts/run-tests integration # Run just the integration tests
 ```
 
 ## Test Setup

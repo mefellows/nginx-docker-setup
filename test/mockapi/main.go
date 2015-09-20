@@ -7,6 +7,7 @@ import (
 
 	"github.com/zenazn/goji"
 	"github.com/zenazn/goji/web"
+	"github.com/zenazn/goji/web/middleware"
 )
 
 func header(c web.C, w http.ResponseWriter, r *http.Request) {
@@ -27,5 +28,6 @@ func ping(c web.C, w http.ResponseWriter, r *http.Request) {
 func main() {
 	goji.Get("/header/:header", header)
 	goji.Get("/*", ping)
+	goji.Abandon(middleware.Logger)
 	goji.Serve()
 }

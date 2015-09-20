@@ -19,18 +19,16 @@ RUN cd /nginx/ngx_openresty-1.7.7.2 && ./configure --add-module=/modsecurity/mod
                                                    && make install
 
 RUN cd /usr/local && ln -s openresty/nginx nginx
-
-EXPOSE 80
-
-CMD ./usr/local/openresty/nginx/sbin/nginx && tail -f /usr/local/openresty/nginx/logs/access.log
+RUN echo "*       soft    nofile  3240000" >> /etc/security/limits.conf
+RUN echo "*       hard    nofile  3240000" >> /etc/security/limits.conf
 
 COPY nginx.conf /usr/local/nginx/conf/nginx.conf
 COPY nginx-config.d/ /usr/local/nginx/conf/conf.d
-RUN echo 'health ok' > /usr/local/nginx/html/index.html
 COPY lib/uuid4.lua /usr/local/nginx/uuid4.lua
 
 EXPOSE 80
 
-VOLUME /usr/local/nginx/logs
+VOLUME /var/log/nginx
 
-CMD /usr/local/nginx/sbin/nginx -g "daemon off;"
+# CMD /usr/local/nginx/sbin/nginx -g "daemon off;"
+CMD /bin/echo 8096 > /writable-proc/sys/net/core/somaxconn && /usr/local/nginx/sbin/nginx -g "daemon off;"
