@@ -14,8 +14,6 @@ WORKDIR /opt/gatling
 
 VOLUME ["/opt/gatling/conf","/opt/gatling/results","/opt/gatling/user-files"]
 
-RUN ls /opt/gatling/
-
 RUN echo "*       soft    nofile  65535" >> /etc/security/limits.conf
 RUN echo "*       hard    nofile  65535" >> /etc/security/limits.conf
 
