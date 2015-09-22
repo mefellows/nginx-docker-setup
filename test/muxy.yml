@@ -31,6 +31,8 @@ api:
   build: mockapi
   ports:
    - "8002:80"
+  environment:
+   - "X-HOST=api"
 
 # We should be hitting this API fairly regularly
 # with Muxy enabled
@@ -40,15 +42,45 @@ api2:
    - "8003:8000"
   environment:
    - PORT=8000
+   - "X-HOST=backupapi"
 
 # Muxy resilience testing
 muxy:
   build: ../muxy
   ports:
   - "8004:80"
+  expose:
+  - "80"
   privileged: true
   volumes:
   - "./muxy/conf/:/opt/muxy/conf"
   - "./muxy/conf/:/tmp"
   links:
   - api:api.foo.com
+
+# Performance tests via Gatling
+# perf:
+#   build: ../gatling
+#   command:
+#     - "-sf"
+#     - "/opt/gatling/user-files"
+#     - "-s"
+#     - "au.com.onegeek.nginxperf.Muxy"
+#   volumes:
+#     - "./gatling/user-files:/opt/gatling/user-files"
+#     - "./gatling/results:/opt/gatling/results"
+#   links:
+#    - nginx:api.foo.com
+#    - nginx:nginx
+
+# This guy runs our Unit tests!
+test:
+  build: muxy
+  command: go test -v ./...
+  links:
+    - nginx:apitest.foo.local
+    - nginx:nginx
+    - nginx:e7e6ad6e7fee22fc4c69dd73aab43d8c.foo.com
+    - nginx:myfandangledwebsite.com
+    - nginx:api.foo.com
+    - nginx:bar.com

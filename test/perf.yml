@@ -45,7 +45,7 @@ api2:
 # Performance tests via Gatling
 perf:
   build: ../gatling
-  command: "-sf /opt/gatling/user-files -s nginx"
+  command: "-sf /opt/gatling/user-files -s au.com.onegeek.nginxperf.Nginx"
   volumes:
     - "./gatling/user-files:/opt/gatling/user-files"
     - "./gatling/results:/opt/gatling/results"

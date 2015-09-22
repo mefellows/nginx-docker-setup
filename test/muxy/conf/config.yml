@@ -55,7 +55,7 @@ middleware:
   ##
   - name: network_shape
     config:
-      latency:     500         # Latency to add in ms
+      latency:     1000         # Latency to add in ms
       target_bw:   750         # Bandwidth in kbits/s
       default_bw:  750
       packet_loss: 50           # Packet loss, as a %
@@ -68,3 +68,8 @@ middleware:
       target_ips:
       - "0.0.0.0/0"
       device: "eth0"
+
+  - name: http_tamperer
+    config:
+      response:
+        status: 500              # Override HTTP Status code
