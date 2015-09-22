@@ -26,8 +26,6 @@ func Test100calls(t *testing.T) {
 			_body := make([]byte, 9)
 			resp.Body.Read(_body)
 			body := strings.TrimSpace(string(_body))
-			fmt.Println("Header: ", resp.Header.Get("Host"))
-			fmt.Println("Body: ", body)
 		}()
 	}
 	fmt.Println("Waiting for all requests to finish...")
