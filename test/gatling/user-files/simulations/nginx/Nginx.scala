@@ -8,15 +8,15 @@ import scala.concurrent.duration._
 
     val httpConf = http
       .baseURL("http://api.foo.com")
-      // .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
-      // .doNotTrackHeader("1")
-      // .acceptLanguageHeader("en-US,en;q=0.5")
-      // .acceptEncodingHeader("gzip, deflate")
-      // .userAgentHeader("Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0")
+      .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+      .doNotTrackHeader("1")
+      .acceptLanguageHeader("en-US,en;q=0.5")
+      .acceptEncodingHeader("gzip, deflate")
+      .userAgentHeader("Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0")
 
     val scn = scenario("BasicSimulation")
       .repeat(10) {
-        exec(http("request_1") 
+        exec(http("request_1")
         .get("/header/host"))
       }
 

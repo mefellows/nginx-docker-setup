@@ -8,7 +8,7 @@ description: Slow network to mobile levels, and add 1s delay to all messages
 ##
 ## Log Levels supported:
 ## Trace (0), Debug (1), Info (2, Default), Warn (3), Error (4), Fatal (5)
-loglevel: 1
+loglevel: 0
 
 ## Configure a proxy that will handle your requests, and forward
 ## to proxied host.
@@ -55,10 +55,16 @@ middleware:
   ##
   - name: network_shape
     config:
-      latency:     250         # Latency to add in ms
+      latency:     500         # Latency to add in ms
       target_bw:   750         # Bandwidth in kbits/s
-      packet_loss: 5           # Packet loss, as a %
+      default_bw:  750
+      packet_loss: 50           # Packet loss, as a %
+      target_ports:
+        - "80"
       target_protos:           # Target protocols
         - "tcp"
         - "udp"
         - "icmp"
+      target_ips:
+      - "0.0.0.0/0"
+      device: "eth0"

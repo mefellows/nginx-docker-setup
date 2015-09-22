@@ -1,49 +1,54 @@
-## Nginx, but using our stubbed out DNS and API endpoints
+# Nginx, but using our stubbed out DNS and API endpoints
 nginx:
   build: ../
   links:
    - dns:dnsmasq
-   - api:api.foo.local
-   - api:api.foo.com
-   - api:myfandangledwebsite.com   
-   - api:bar.com
-   - api:newbar.com   
+   - muxy:api.foo.local
    - api2:api-backup.foo.local
   ports:
    - "8001:80"
   volumes:
-  - "/proc:/writable-proc" 
+  - "/proc:/writable-proc"
   - "./log:/var/log/nginx/"
 
-## Responds to DNS queries and sends them to our Mock API
+# Responds to DNS queries and sends them to our Mock API
+# Point at Mock API via Muxy
 dns:
   build: ../dnsmasq
   ports:
   - 53:53
   links:
-   - api:apitest.foo.local
-   - api:newbar.com
-   - api:bar.com
-   - api:myfandangledwebsite.com   
-   - api:api.foo.com
-   - api:api.foo.local
-   - api2:api-backup.foo.local   
+   - muxy:apitest.foo.local
+   - muxy:newbar.com
+   - muxy:bar.com
+   - muxy:myfandangledwebsite.com
+   - muxy:api.foo.com
+   - muxy:api.foo.local
+   - muxy:api-backup.foo.local
 
-## Echo / Mock Server to pretend to be our real application
+# Echo / Mock Server to pretend to be our real application
 api:
   build: mockapi
   ports:
    - "8002:80"
 
+# We should be hitting this API fairly regularly
+# with Muxy enabled
 api2:
   build: mockapi
   ports:
-   - "8003:80"
+   - "8003:8000"
+  environment:
+   - PORT=8000
 
-# Performance tests via Gatling
+# Muxy resilience testing
 muxy:
   build: ../muxy
-  command: "-sf /opt/gatling/user-files -s nginx"
+  ports:
+  - "8004:80"
+  privileged: true
+  volumes:
+  - "./muxy/conf/:/opt/muxy/conf"
+  - "./muxy/conf/:/tmp"
   links:
-   - nginx:api.foo.com
-   - nginx:nginx
+  - api:api.foo.com

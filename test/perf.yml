@@ -5,14 +5,14 @@ nginx:
    - dns:dnsmasq
    - api:api.foo.local
    - api:api.foo.com
-   - api:myfandangledwebsite.com   
+   - api:myfandangledwebsite.com
    - api:bar.com
-   - api:newbar.com   
+   - api:newbar.com
    - api2:api-backup.foo.local
   ports:
    - "8001:80"
   volumes:
-  - "/proc:/writable-proc" 
+  - "/proc:/writable-proc"
   - "./log:/var/log/nginx/"
 
 ## Responds to DNS queries and sends them to our Mock API
@@ -24,10 +24,10 @@ dns:
    - api:apitest.foo.local
    - api:newbar.com
    - api:bar.com
-   - api:myfandangledwebsite.com   
+   - api:myfandangledwebsite.com
    - api:api.foo.com
    - api:api.foo.local
-   - api2:api-backup.foo.local   
+   - api2:api-backup.foo.local
 
 ## Echo / Mock Server to pretend to be our real application
 api:
@@ -38,7 +38,9 @@ api:
 api2:
   build: mockapi
   ports:
-   - "8003:80"
+   - "8003:8000"
+  environment:
+   - PORT=8000
 
 # Performance tests via Gatling
 perf:
