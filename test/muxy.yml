@@ -41,7 +41,7 @@ api2:
   ports:
    - "8003:8000"
   environment:
-   - PORT=8000
+   - "PORT=8000"
    - "X-HOST=backupapi"
 
 # Muxy resilience testing
@@ -57,21 +57,6 @@ muxy:
   - "./muxy/conf/:/tmp"
   links:
   - api:api.foo.com
-
-# Performance tests via Gatling
-# perf:
-#   build: ../gatling
-#   command:
-#     - "-sf"
-#     - "/opt/gatling/user-files"
-#     - "-s"
-#     - "au.com.onegeek.nginxperf.Muxy"
-#   volumes:
-#     - "./gatling/user-files:/opt/gatling/user-files"
-#     - "./gatling/results:/opt/gatling/results"
-#   links:
-#    - nginx:api.foo.com
-#    - nginx:nginx
 
 # This guy runs our Unit tests!
 test:
