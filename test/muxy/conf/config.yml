@@ -2,7 +2,7 @@
 name: Network and HTTP screwer.
 
 ## Test Description. Used for reporting
-description: Slow network to mobile levels, and add 1s delay to all messages
+description: Slow network to mobile levels, and add delay to all messages
 
 ## Specify log output level
 ##
@@ -55,10 +55,10 @@ middleware:
   ##
   - name: network_shape
     config:
-      latency:     1000         # Latency to add in ms
+      latency:     50         # Latency to add in ms
       target_bw:   750         # Bandwidth in kbits/s
       default_bw:  750
-      packet_loss: 50           # Packet loss, as a %
+      packet_loss: 30          # Packet loss, as a %
       target_ports:
         - "80"
       target_protos:           # Target protocols
@@ -69,7 +69,7 @@ middleware:
       - "0.0.0.0/0"
       device: "eth0"
 
-  - name: http_tamperer
-    config:
-      response:
-        status: 500              # Override HTTP Status code
+  # - name: http_tamperer
+  #   config:
+  #     response:
+  #       status: 500              # Override HTTP Status code

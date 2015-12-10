@@ -33,8 +33,10 @@ api:
    - "8002:80"
   environment:
    - "X-HOST=api"
+  links:
+  - statsd:statsd   
 
-# We should be hitting this API fairly regularly
+# Backup API. We should be hitting this API fairly regularly
 # with Muxy enabled
 api2:
   build: mockapi
@@ -43,6 +45,8 @@ api2:
   environment:
    - "PORT=8000"
    - "X-HOST=backupapi"
+  links:
+  - statsd:statsd
 
 # Muxy resilience testing
 muxy:
@@ -69,3 +73,18 @@ test:
     - nginx:myfandangledwebsite.com
     - nginx:api.foo.com
     - nginx:bar.com
+
+statsd:
+  build: sgg
+  ports:
+  - "8025:80"
+  - "2003:2003/tcp"
+  - "8125:8125/udp"
+  - "8126:8126"
+  - "9200:9200"
+  - "9300:9300"
+  - "8081:81"
+  volumes:
+  - "./sgg/data/whisper:/opt/graphite/storage/whisper"
+  - "./sgg/data/elasticsearch:/var/lib/elasticsearch"
+  - "./sgg/data/sqllite:/opt/grafana/data"

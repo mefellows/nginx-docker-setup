@@ -5,6 +5,8 @@ BINARY="docker-compose"
 ARG="-f "
 
 function run() {
+  docker rm `docker ps --no-trunc -aq`
+
   RUN_COMMAND="${BINARY} ${ARG} ${1}.yml"
   ${RUN_COMMAND} stop && ${RUN_COMMAND}  rm -f && ${RUN_COMMAND} build && ${RUN_COMMAND}  up --force-recreate
 }

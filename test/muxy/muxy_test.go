@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"strings"
 	"sync"
 	"testing"
 )
@@ -22,10 +21,6 @@ func Test100calls(t *testing.T) {
 			if resp.StatusCode != 200 {
 				t.Fatalf("Expected 200 response code, but got %d", resp.StatusCode)
 			}
-
-			_body := make([]byte, 9)
-			resp.Body.Read(_body)
-			body := strings.TrimSpace(string(_body))
 		}()
 	}
 	fmt.Println("Waiting for all requests to finish...")
