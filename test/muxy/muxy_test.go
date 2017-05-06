@@ -3,29 +3,32 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"strings"
 	"sync"
 	"testing"
 )
 
 func Test100calls(t *testing.T) {
 	host := fmt.Sprintf("http://api.foo.com/header/x-host")
+	// If you want to run tests from your machine
+	// host := fmt.Sprintf("http://api.foo.com:8001/header/x-host")
 	wait := &sync.WaitGroup{}
 	wait.Add(100)
 	for i := 0; i < 100; i++ {
 		go func() {
 			defer wait.Done()
 			resp, err := http.Get(host)
-			fmt.Println(resp)
+			fmt.Println(resp.Header["X-Host"])
+			// fmt.Println(resp)
 			checkErr(err, false, t)
 
 			if resp.StatusCode != 200 {
 				t.Fatalf("Expected 200 response code, but got %d", resp.StatusCode)
 			}
 
-			_body := make([]byte, 9)
-			resp.Body.Read(_body)
-			body := strings.TrimSpace(string(_body))
+			// _body := make([]byte, 9)
+			// resp.Body.Read(_body)
+			// body := strings.TrimSpace(string(_body))
+			// fmt.Println(body)
 		}()
 	}
 	fmt.Println("Waiting for all requests to finish...")

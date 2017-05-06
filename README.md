@@ -41,7 +41,7 @@ Nginx is then configured to use dnsmasq for [host resolution](http://nginx.org/e
 The components of the integration test are:
 
 * Nginx
-* dnsmasq - hijacks the real domain names, instructing Nginx to send traffic to our Mock Server so that we can
+* dnsmasq - hijacks the real domain names, instructing Nginx to send traffic to our Mock Server so that we can test production configuration
 * [Mock Server](../mockapi/README.md)
 * Test Case container issuing requests against the Nginx instance
 
@@ -49,6 +49,7 @@ This can be visually represented as:
 
 ```
 [Test Container] <- (issues tests to) -> [Nginx Container] <- (proxies) -> [Mock API]
+                                                 ||        <- (proxies) -> [Backup API]   
                                                  ||
                                     (resolves DNS queries from)
                                                  \/

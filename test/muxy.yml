@@ -3,6 +3,7 @@ nginx:
   build: ../
   links:
    - dns:dnsmasq
+  #  - api:api.foo.local
    - muxy:api.foo.local
    - api2:api-backup.foo.local
   ports:
@@ -39,9 +40,8 @@ api:
 api2:
   build: mockapi
   ports:
-   - "8003:8000"
+   - "8003:80"
   environment:
-   - "PORT=8000"
    - "X-HOST=backupapi"
 
 # Muxy resilience testing
